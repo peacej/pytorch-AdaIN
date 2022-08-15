@@ -68,7 +68,8 @@ parser.add_argument('--save_ext', default='.jpg',
                     help='The extension name of the output image')
 parser.add_argument('--output', type=str, default='output',
                     help='Directory to save the output image(s)')
-
+parser.add_argument('--output_file_name', type=str, default='',
+                    help='file name of the output image (excl. the extension)')
 # Advanced options
 parser.add_argument('--preserve_color', action='store_true',
                     help='If specified, preserve color of the content image')
@@ -139,7 +140,11 @@ for content_path in content_paths:
             output = style_transfer(vgg, decoder, content, style,
                                     args.alpha, interpolation_weights)
         output = output.cpu()
-        output_name = output_dir / '{:s}_interpolation{:s}'.format(
+        if args.output_file_name:
+            output_name = output_dir / '{:s}{:s}'.format(
+            args.output_file_name, args.save_ext)
+        else:
+            output_name = output_dir / '{:s}_interpolation{:s}'.format(
             content_path.stem, args.save_ext)
         save_image(output, str(output_name))
 
